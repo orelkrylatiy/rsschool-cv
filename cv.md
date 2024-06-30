@@ -10,6 +10,15 @@ A dedicated second-year computer science student with foundational skills in **C
 ### **Skills**
 - **Programming Languages:** C++ (Basic), Python (Basic)
 
+### **Experience of studying and achievments**
+
+**Current:** Bachelor’s Degree in Computer Science, 2nd Year
+**High School:** Completed 11 Grades
+
+### **Level of english**
+
+**Proficiency:** B1
+
 ### **Code Example**
 ```cpp
 #include <iostream>
@@ -27,13 +36,8 @@ int main() {
     cin >> number;
     cout << "Factorial of " << number << " is " << factorial(number) << endl;
     return 0;
-}```
+}
+```
+### **Experience of working**
 
-### **Experience of work and studying**
-
-**Current:** Bachelor’s Degree in Computer Science, 2nd Year
-**High School:** Completed 11 Grades
-
-### **Level of english**
-
-**Proficiency:** B1
+No
