@@ -27,7 +27,7 @@ int main() {
     cin >> number;
     cout << "Factorial of " << number << " is " << factorial(number) << endl;
     return 0;
-}
+}```
 
 ### **Experience of work and studying**
 
