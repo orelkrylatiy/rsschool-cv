@@ -1,4 +1,62 @@
-p {
-  color: red;
+@font-face {
+  font-family: "Roboto";
+  src: url("../fonts/Roboto.ttf");
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("../fonts/RobotoThin.ttf");
+  font-weight: 100;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("../fonts/RobotoRegular.ttf");
+  font-weight: 300;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: "Roboto", sans-serif;
+}
+header, footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+footer a {
+  color: white;
+  text-decoration: none;
+}
+
+.profile-pic {
+  width: 150px; /* Устанавливает фиксированный размер изображения */
+  height: 150px; /* Устанавливает высоту равной ширине для создания круга */
+  border-radius: 50%; /* Делает изображение круглым */
+  object-fit: cover; /* Обеспечивает корректное заполнение контентом */
+}
+
+#about {
+  display: flex; /* Активирует flexbox для контейнера */
+  align-items: center; /* Центрирует элементы по вертикали */
+  gap: 20px; /* Добавляет пространство между элементами */
+}
+
+#about h2 {
+  color: #0056b3; /* Устанавливает цвет заголовка */
+  margin-bottom: 0.5em; /* Устанавливает отступ снизу для заголовка */
+}
+
+#about p {
+  color: #333; /* Устанавливает цвет текста */
+  font-size: 1.1em; /* Увеличивает размер шрифта текста */
+  line-height: 1.6; /* Устанавливает высоту строки */
+}
+.course-logo {
+  width: 150px; /* Или другой размер, который вам подходит */
+  height: auto; /* Сохраняет пропорции изображения */
 }
 
