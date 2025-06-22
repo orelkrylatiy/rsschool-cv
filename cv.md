@@ -1,3 +1,0 @@
-# Max Agafonov
-
-## Wooooow
