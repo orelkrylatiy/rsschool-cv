@@ -1,4 +1,3 @@
-
 # rsschool-cv — Резюме для Rolling Scopes School
 
 Этот репозиторий содержит моё персональное резюме, выполненное в рамках этапа **Stage 0** курса [Rolling Scopes School](https://rs.school/). Проект представлен в двух форматах:
