@@ -1,0 +1,19 @@
+{
+  "name": "Lime Timer — таймер на весь экран",
+  "short_name": "Lime Timer",
+  "description": "Крупный таймер обратного отсчёта для телефона",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0e0a",
+  "theme_color": "#0b0e0a",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
