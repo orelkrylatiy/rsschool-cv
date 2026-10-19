@@ -42,15 +42,19 @@
     .clock-button { display:flex; align-items:center; justify-content:center; border:0; color:var(--lime); background:transparent; width:100%; max-width:900px; min-height:calc(clamp(84px,27.5vw,220px) * 1.42); padding:8px 0 0; }
     .clock { display:block; font-size:clamp(80px,27.5vw,220px); font-weight:850; font-variant-numeric:tabular-nums; font-feature-settings:"tnum"; line-height:1; letter-spacing:-.077em; white-space:nowrap; transform:translateX(-.03em); text-shadow:0 8px 100px rgba(185,255,67,.085); }
     .app.is-finished .clock { color:#f0f7e9; }
-    .helper { color:#74816f; margin-top:7px; font-size:13px; font-weight:500; text-align:center; }
+    .helper { color:#a8b69e; margin-top:7px; font-size:clamp(13px,3.5vw,16px); font-weight:650; text-align:center; min-height:1.5em; line-height:1.45; max-width:90%; text-wrap:balance; }
+    .edit-hint { color:#5f7059; font-size:11px; margin-top:10px; text-align:center; }
+    .toast[hidden] { display:none; }
+    .toast { position:fixed; z-index:30; bottom:calc(30px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); max-width:min(90vw,420px); padding:13px 19px; background:#2b3b24; color:#e8ffdc; text-align:center; border:1px solid rgba(185,255,67,.38); border-radius:15px; font-size:13px; font-weight:600; box-shadow:0 15px 40px rgba(0,0,0,.36); pointer-events:none; }
+    .full-help { color:#cbd9c3; font-size:14px; line-height:1.6; margin-bottom:21px; }
+    .full-help strong { color:var(--lime); }
     .track { margin-top:41px; height:5px; width:min(70%,440px); background:#273322; border-radius:100px; overflow:hidden; }
     .track-fill { height:100%; width:0%; border-radius:inherit; background:var(--lime); transition:width .18s linear; }
     .bottom { padding-bottom:4px; }
     .section-label { font-size:11px; letter-spacing:.18em; font-weight:850; color:#85927e; display:flex; justify-content:space-between; gap:10px; margin-bottom:14px; }
     .section-label span:last-child { text-transform:none; font-size:11px; font-weight:550; letter-spacing:0; color:#596554; }
-    .presets { display:flex; gap:9px; overflow-x:auto; scrollbar-width:none; padding-bottom:6px; margin:0 -2px; }
-    .presets::-webkit-scrollbar { display:none; }
-    .preset { flex:1 0 auto; min-width:65px; height:52px; padding:0 15px; border:1px solid var(--line); color:#acb7a5; border-radius:16px; background:var(--surface); font-weight:800; font-variant-numeric:tabular-nums; font-size:14px; letter-spacing:.01em; transition:background .16s,color .16s; }
+    .presets { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; }
+    .preset { width:100%; height:50px; padding:0 4px; border:1px solid var(--line); color:#acb7a5; border-radius:15px; background:var(--surface); font-weight:800; font-variant-numeric:tabular-nums; font-size:13px; letter-spacing:.01em; transition:background .16s,color .16s; }
     .preset.active { background:var(--lime-soft); border-color:rgba(185,255,67,.57); color:var(--lime); }
     .preset:active { transform:scale(.98); }
     .controls { display:grid; grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr); gap:12px; margin-top:22px; }
@@ -73,8 +77,8 @@
     .time-fields .colon { color:var(--lime); font-weight:850; font-size:38px; padding-top:18px; }
     .sheet-error { min-height:22px; margin:14px 0 6px; text-align:center; color:#ffb69f; font-size:12px; }
     .sheet-submit { width:100%; border:0; border-radius:17px; height:60px; background:var(--lime); color:#141a0d; font-size:16px; font-weight:850; }
-    @media (min-width:720px) { .app { padding-top:32px; padding-bottom:34px; } .clock { font-size:clamp(100px,16vw,204px); } .controls { max-width:540px; width:100%; margin-left:auto; margin-right:auto; } .presets { justify-content:center; } .preset { flex:0 0 auto; min-width:91px; } .section-label { max-width:660px; margin-left:auto; margin-right:auto; } .topbar { margin-bottom:10px; } }
-    @media (max-width:375px) { .app { padding-left:16px; padding-right:16px; } .clock { font-size:27.5vw; } .preset { min-width:62px; padding:0 11px; } .control { height:66px; } .controls { margin-top:15px; } .track { margin-top:30px; } }
+    @media (min-width:720px) { .app { padding-top:32px; padding-bottom:34px; } .clock { font-size:clamp(100px,16vw,204px); } .controls { max-width:540px; width:100%; margin-left:auto; margin-right:auto; } .presets { max-width:660px; margin-left:auto; margin-right:auto; } .preset { height:54px; font-size:15px; } .section-label { max-width:660px; margin-left:auto; margin-right:auto; } .topbar { margin-bottom:10px; } }
+    @media (max-width:375px) { .app { padding-left:16px; padding-right:16px; } .clock { font-size:27.5vw; } .preset { padding:0 1px; font-size:12px; } .control { height:66px; } .controls { margin-top:15px; } .track { margin-top:30px; } }
     @media (max-height:700px) { .app { padding-top:calc(10px + env(safe-area-inset-top)); padding-bottom:calc(12px + env(safe-area-inset-bottom)); } .stage { min-height:190px; padding:8px 0; } .clock-button { min-height:calc(clamp(80px,27.5vw,220px) * 1.15); } .track { margin-top:22px; } .preset { height:44px; } .control { height:62px; } .controls { margin-top:13px; } .footer { margin-top:13px; } }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
   </style>
@@ -93,7 +97,8 @@
     <section class="stage" aria-label="Таймер обратного отсчёта">
       <div class="status" aria-live="polite"><span class="status-dot" aria-hidden="true"></span><span id="statusText">ГОТОВ К СТАРТУ</span></div>
       <button class="clock-button" id="clockBtn" type="button" aria-label="Изменить время таймера"><span class="clock" id="clock" role="timer" aria-live="off">00:30</span></button>
-      <div class="helper" id="helperText">Нажми на цифры, чтобы изменить время</div>
+      <div class="helper" id="helperText" aria-live="polite">Давай делай. Главное — начать.</div>
+      <div class="edit-hint">Нажми на цифры, чтобы изменить время</div>
       <div class="track" role="progressbar" aria-label="Прогресс таймера" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><div class="track-fill" id="progressFill"></div></div>
     </section>
     <section class="bottom" aria-label="Управление таймером">
@@ -101,6 +106,8 @@
       <div class="presets" id="presets">
         <button class="preset active" type="button" data-seconds="30" aria-pressed="true">00:30</button>
         <button class="preset" type="button" data-seconds="60" aria-pressed="false">01:00</button>
+        <button class="preset" type="button" data-seconds="120" aria-pressed="false">02:00</button>
+        <button class="preset" type="button" data-seconds="180" aria-pressed="false">03:00</button>
         <button class="preset" type="button" data-seconds="300" aria-pressed="false">05:00</button>
         <button class="preset" type="button" data-seconds="900" aria-pressed="false">15:00</button>
         <button class="preset" type="button" data-seconds="1500" aria-pressed="false">25:00</button>
@@ -113,6 +120,15 @@
       <div class="footer">Без рекламы · Работает офлайн · Создан для фокуса</div>
     </section>
   </main>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <div class="overlay" id="fullOverlay" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="fullTitle">
+      <div class="sheet-top"><h2 id="fullTitle">На весь экран</h2><button class="close" id="fullClose" type="button" aria-label="Закрыть">×</button></div>
+      <p class="sheet-caption">На iPhone полноэкранный режим включается через домашний экран.</p>
+      <div class="full-help">1. Открой эту страницу в <strong>Safari</strong>.<br>2. Нажми <strong>«Поделиться»</strong> (квадрат со стрелкой).<br>3. Выбери <strong>«На экран „Домой“»</strong> → <strong>«Добавить»</strong>.<br>4. Запусти <strong>Lime Timer</strong> с экрана iPhone.</div>
+      <button class="sheet-submit" type="button" id="fullOk">Понятно</button>
+    </div>
+  </div>
   <div class="overlay" id="overlay" hidden>
     <form class="sheet" id="timeForm" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
       <div class="sheet-top"><h2 id="sheetTitle">Своё время</h2><button class="close" type="button" id="closeBtn" aria-label="Закрыть">×</button></div>
@@ -136,6 +152,33 @@
       const state = { duration:30, remaining:30000, endAt:null, running:false, sound:true, finished:false };
       let audioContext = null;
       let wakeLock = null;
+      let toastTimer = null;
+      let lastPhase = '';
+      let quoteIndex = -1;
+      let nextQuoteAt = 0;
+      const quotes = {
+        ready: ['Давай делай. Главное — начать.', 'Хватит откладывать. Пора работать.', 'Одна минута дела лучше часа мыслей.', 'Не ищи мотивацию. Начинай.', 'Меньше слов — больше дела.'],
+        running: ['Давай делай. Без отвлечений.', 'Работай. Остальное подождёт.', 'Начал — доводи до конца.', 'Сейчас важна только задача.', 'Ещё немного. Дожимай.', 'Фокус. Ты справишься.'],
+        paused: ['Перерыв взял? Теперь возвращайся.', 'Пауза — не конец. Продолжай.', 'Соберись и возвращайся к делу.'],
+        finished: ['Готово. Хорошая работа!', 'Вот так и строится дисциплина.', 'Один подход сделан. Продолжай!', 'Ты сделал это. Двигайся дальше.']
+      };
+      function showToast(message) {
+        clearTimeout(toastTimer);
+        $('toast').textContent = message;
+        $('toast').hidden = false;
+        toastTimer = setTimeout(() => { $('toast').hidden = true; }, 2400);
+      }
+      function motivationalText(phase) {
+        const now = Date.now();
+        if (phase !== lastPhase || now >= nextQuoteAt) {
+          const pool = quotes[phase];
+          if (phase !== lastPhase) quoteIndex = Math.floor(Math.random()*pool.length);
+          else quoteIndex = (quoteIndex + 1)%pool.length;
+          lastPhase = phase;
+          nextQuoteAt = now + (phase === 'running' ? 18000 : 26000);
+        }
+        return quotes[phase][quoteIndex];
+      }
       function format(seconds) { const s = Math.max(0, Math.ceil(seconds)); return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
       function readStorage() {
         try {
@@ -160,7 +203,8 @@
         $('app').classList.toggle('is-running',state.running);
         $('app').classList.toggle('is-finished',state.finished);
         $('statusText').textContent = state.finished ? 'ВРЕМЯ ВЫШЛО' : state.running ? 'ТАЙМЕР ИДЁТ' : ms < state.duration*1000 ? 'НА ПАУЗЕ' : 'ГОТОВ К СТАРТУ';
-        $('helperText').textContent = state.finished ? 'Отлично! Время завершено.' : state.running ? 'Ты в моменте. Продолжай.' : 'Нажми на цифры, чтобы изменить время';
+        const phase = state.finished ? 'finished' : state.running ? 'running' : ms < state.duration*1000 ? 'paused' : 'ready';
+        $('helperText').textContent = motivationalText(phase);
         $('playText').textContent = state.running ? 'Пауза' : state.finished ? 'Ещё раз' : ms < state.duration*1000 ? 'Продолжить' : 'Старт';
         $('playIcon').innerHTML = state.running ? icons.pause : icons.play;
         const progress = Math.max(0,Math.min(100,(1 - ms/(state.duration*1000))*100));
@@ -184,12 +228,12 @@
           if (audioContext && audioContext.state === 'suspended') audioContext.resume().catch(()=>{});
         } catch (_) { /* No audio available. */ }
       }
-      function ding() {
+      function ding(preview=false) {
         if (!state.sound) return;
         try {
           primeAudio(); if (!audioContext) return;
           const base = audioContext.currentTime;
-          for (let i=0; i<3; i++) {
+          for (let i=0; i<(preview ? 1 : 3); i++) {
             const t=base + i*.31;
             const osc=audioContext.createOscillator(), gain=audioContext.createGain();
             osc.type='sine'; osc.frequency.setValueAtTime(i===2?900:750,t);
@@ -209,7 +253,7 @@
         persist(); render();
       }
       function reset() { state.running=false; state.endAt=null; state.remaining=state.duration*1000; state.finished=false; releaseWake(); persist(); render(); }
-      function setDuration(seconds) { if (!Number.isInteger(seconds) || seconds<1 || seconds>5999) return; state.duration=seconds; reset(); }
+      function setDuration(seconds) { if (!Number.isInteger(seconds) || seconds<1 || seconds>5999) return; state.duration=seconds; lastPhase=''; reset(); }
       function tick() { if (state.running && state.endAt <= Date.now()) finish(); else if (state.running) render(); }
       function openEditor() {
         const leftSeconds = Math.ceil(msLeft()/1000) || state.duration;
@@ -231,17 +275,37 @@
         setDuration(m*60+s); closeEditor();
       });
       $('presets').addEventListener('click',e=>{ const btn=e.target.closest('[data-seconds]'); if (btn) setDuration(Number(btn.dataset.seconds)); });
-      $('soundBtn').addEventListener('click',()=>{ state.sound=!state.sound; if (state.sound) primeAudio(); persist(); render(); });
+      $('soundBtn').addEventListener('click',()=>{
+        state.sound=!state.sound;
+        if (state.sound) { primeAudio(); ding(true); }
+        persist(); render();
+        showToast(state.sound ? 'Звук включён · проверочный сигнал' : 'Звук выключен');
+      });
+      function closeFullHelp() { $('fullOverlay').hidden=true; $('fullBtn').focus({preventScroll:true}); }
+      function openFullHelp() { $('fullOverlay').hidden=false; $('fullClose').focus({preventScroll:true}); }
+      $('fullClose').addEventListener('click',closeFullHelp);
+      $('fullOk').addEventListener('click',closeFullHelp);
+      $('fullOverlay').addEventListener('click',e=>{ if(e.target === $('fullOverlay')) closeFullHelp(); });
       $('fullBtn').addEventListener('click',async()=>{
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+          showToast('Приложение уже открыто без панели Safari');
+          return;
+        }
         try {
           if (document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
-          else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
-          else { $('fullBtn').setAttribute('title','На iPhone: Поделиться → На экран «Домой»'); }
-        } catch (_) { /* iOS Safari may not support the fullscreen API. */ }
+          else if (typeof document.documentElement.requestFullscreen === 'function') await document.documentElement.requestFullscreen();
+          else openFullHelp();
+        } catch (_) { openFullHelp(); }
+      });
+      document.addEventListener('fullscreenchange',()=>{
+        const active=Boolean(document.fullscreenElement);
+        $('fullBtn').setAttribute('aria-label',active ? 'Выйти из полноэкранного режима' : 'На весь экран');
+        $('fullBtn').setAttribute('title',active ? 'Выйти из полноэкранного режима' : 'На весь экран');
       });
       document.addEventListener('keydown',e=>{
+        if (e.key==='Escape' && !$('fullOverlay').hidden) { closeFullHelp(); return; }
         if (e.key==='Escape' && !$('overlay').hidden) { closeEditor(); return; }
-        if (!$('overlay').hidden || ['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+        if (!$('overlay').hidden || !$('fullOverlay').hidden || ['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
         if (e.code==='Space') { e.preventDefault(); toggle(); }
         if (e.key.toLowerCase()==='r') reset();
       });
