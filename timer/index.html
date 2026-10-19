@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0e0a">
+  <meta name="color-scheme" content="dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Lime Timer">
+  <meta name="description" content="Минималистичный таймер на весь экран. Большие цифры, быстрые интервалы и никакой рекламы.">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <title>Lime Timer — таймер на весь экран</title>
+  <style>
+    :root { --bg:#0b0e0a; --surface:#141a11; --ink:#eef6e9; --muted:#7f8b7a; --lime:#b9ff43; --lime-soft:rgba(185,255,67,.12); --line:rgba(220,245,202,.12); }
+    * { box-sizing:border-box; }
+    html { -webkit-text-size-adjust:100%; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; overscroll-behavior:none; }
+    body::before { content:""; position:fixed; inset:0; pointer-events:none; background:radial-gradient(ellipse 85% 45% at 50% 43%,rgba(89,130,34,.09),transparent 74%); }
+    button,input { font:inherit; }
+    button { -webkit-tap-highlight-color:transparent; cursor:pointer; }
+    button:focus-visible,input:focus-visible { outline:2px solid var(--lime); outline-offset:4px; }
+    .app { width:min(100%,940px); min-height:100vh; min-height:100svh; margin:0 auto; padding:calc(22px + env(safe-area-inset-top)) clamp(20px,5vw,40px) calc(24px + env(safe-area-inset-bottom)); display:flex; flex-direction:column; position:relative; }
+    .topbar { display:flex; justify-content:space-between; gap:14px; align-items:center; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand-icon { width:45px; height:45px; display:grid; place-items:center; background:var(--lime); border-radius:14px; color:#10170a; font-size:24px; line-height:1; font-weight:1000; letter-spacing:-.12em; box-shadow:0 5px 24px rgba(185,255,67,.1); }
+    .brand-icon span { transform:translateX(-2px); }
+    .brand-name { font-size:13px; font-weight:900; line-height:1.1; letter-spacing:.15em; }
+    .brand-name em { color:var(--lime); font-style:normal; }
+    .brand-tagline { color:var(--muted); font-size:9px; letter-spacing:.21em; margin-top:5px; font-weight:750; }
+    .top-actions { display:flex; gap:8px; }
+    .icon-btn { width:44px; height:44px; border:1px solid var(--line); border-radius:15px; background:rgba(255,255,255,.025); display:grid; place-items:center; color:#c3ccb9; transition:background .16s,border-color .16s; }
+    .icon-btn:active { background:var(--lime-soft); }
+    .icon-btn svg { width:21px; height:21px; stroke:currentColor; stroke-width:1.8; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+    .icon-btn[aria-pressed="false"] { color:var(--muted); }
+    .stage { flex:1; display:flex; min-height:245px; flex-direction:column; justify-content:center; align-items:center; gap:0; padding:22px 0 26px; }
+    .status { display:flex; align-items:center; gap:9px; color:#9ba997; font-size:11px; font-weight:800; letter-spacing:.21em; user-select:none; }
+    .status-dot { display:block; width:7px; height:7px; border-radius:50%; background:var(--lime); box-shadow:0 0 0 5px rgba(185,255,67,.1); }
+    .app.is-running .status-dot { animation:pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse { 50% { box-shadow:0 0 0 9px rgba(185,255,67,0); } }
+    .clock-button { display:flex; align-items:center; justify-content:center; border:0; color:var(--lime); background:transparent; width:100%; max-width:900px; min-height:calc(clamp(84px,27.5vw,220px) * 1.42); padding:8px 0 0; }
+    .clock { display:block; font-size:clamp(80px,27.5vw,220px); font-weight:850; font-variant-numeric:tabular-nums; font-feature-settings:"tnum"; line-height:1; letter-spacing:-.077em; white-space:nowrap; transform:translateX(-.03em); text-shadow:0 8px 100px rgba(185,255,67,.085); }
+    .app.is-finished .clock { color:#f0f7e9; }
+    .helper { color:#74816f; margin-top:7px; font-size:13px; font-weight:500; text-align:center; }
+    .track { margin-top:41px; height:5px; width:min(70%,440px); background:#273322; border-radius:100px; overflow:hidden; }
+    .track-fill { height:100%; width:0%; border-radius:inherit; background:var(--lime); transition:width .18s linear; }
+    .bottom { padding-bottom:4px; }
+    .section-label { font-size:11px; letter-spacing:.18em; font-weight:850; color:#85927e; display:flex; justify-content:space-between; gap:10px; margin-bottom:14px; }
+    .section-label span:last-child { text-transform:none; font-size:11px; font-weight:550; letter-spacing:0; color:#596554; }
+    .presets { display:flex; gap:9px; overflow-x:auto; scrollbar-width:none; padding-bottom:6px; margin:0 -2px; }
+    .presets::-webkit-scrollbar { display:none; }
+    .preset { flex:1 0 auto; min-width:65px; height:52px; padding:0 15px; border:1px solid var(--line); color:#acb7a5; border-radius:16px; background:var(--surface); font-weight:800; font-variant-numeric:tabular-nums; font-size:14px; letter-spacing:.01em; transition:background .16s,color .16s; }
+    .preset.active { background:var(--lime-soft); border-color:rgba(185,255,67,.57); color:var(--lime); }
+    .preset:active { transform:scale(.98); }
+    .controls { display:grid; grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr); gap:12px; margin-top:22px; }
+    .control { display:flex; align-items:center; justify-content:center; gap:11px; height:74px; border-radius:21px; font-size:17px; font-weight:800; border:1px solid var(--line); }
+    .control svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .reset { background:#1b2318; color:#c4d1bb; }
+    .primary { background:var(--lime); color:#121a0c; border-color:var(--lime); box-shadow:0 9px 50px rgba(185,255,67,.105); }
+    .primary:active,.reset:active { transform:scale(.99); }
+    .footer { margin-top:24px; text-align:center; color:#596554; font-size:11px; letter-spacing:.035em; }
+    .overlay[hidden] { display:none; }
+    .overlay { position:fixed; inset:0; z-index:10; background:rgba(0,0,0,.68); display:flex; align-items:flex-end; justify-content:center; padding:16px 16px max(16px,env(safe-area-inset-bottom)); backdrop-filter:blur(9px); }
+    .sheet { width:100%; max-width:480px; padding:27px 24px 24px; border-radius:28px; background:#1b2418; border:1px solid #394632; box-shadow:0 20px 80px rgba(0,0,0,.45); }
+    .sheet-top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .sheet h2 { font-size:23px; letter-spacing:-.04em; margin:0; }
+    .close { border:0; background:transparent; color:#aab5a3; font-size:27px; line-height:1; width:36px; height:36px; }
+    .sheet-caption { color:#90a08a; font-size:13px; margin:7px 0 25px; }
+    .time-fields { display:flex; justify-content:center; align-items:center; gap:13px; }
+    .time-fields label { display:flex; flex-direction:column; align-items:center; gap:10px; color:#a5b09f; font-size:10px; letter-spacing:.16em; font-weight:800; width:43%; }
+    .time-fields input { width:100%; height:88px; border:1px solid #46573d; border-radius:19px; background:#11190f; color:var(--lime); font-size:45px; font-weight:850; text-align:center; font-variant-numeric:tabular-nums; padding:0 8px; }
+    .time-fields .colon { color:var(--lime); font-weight:850; font-size:38px; padding-top:18px; }
+    .sheet-error { min-height:22px; margin:14px 0 6px; text-align:center; color:#ffb69f; font-size:12px; }
+    .sheet-submit { width:100%; border:0; border-radius:17px; height:60px; background:var(--lime); color:#141a0d; font-size:16px; font-weight:850; }
+    @media (min-width:720px) { .app { padding-top:32px; padding-bottom:34px; } .clock { font-size:clamp(100px,16vw,204px); } .controls { max-width:540px; width:100%; margin-left:auto; margin-right:auto; } .presets { justify-content:center; } .preset { flex:0 0 auto; min-width:91px; } .section-label { max-width:660px; margin-left:auto; margin-right:auto; } .topbar { margin-bottom:10px; } }
+    @media (max-width:375px) { .app { padding-left:16px; padding-right:16px; } .clock { font-size:27.5vw; } .preset { min-width:62px; padding:0 11px; } .control { height:66px; } .controls { margin-top:15px; } .track { margin-top:30px; } }
+    @media (max-height:700px) { .app { padding-top:calc(10px + env(safe-area-inset-top)); padding-bottom:calc(12px + env(safe-area-inset-bottom)); } .stage { min-height:190px; padding:8px 0; } .clock-button { min-height:calc(clamp(80px,27.5vw,220px) * 1.15); } .track { margin-top:22px; } .preset { height:44px; } .control { height:62px; } .controls { margin-top:13px; } .footer { margin-top:13px; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
+  </style>
+</head>
+<body>
+  <main class="app" id="app">
+    <header class="topbar">
+      <div class="brand"><div class="brand-icon" aria-hidden="true"><span>T.</span></div><div><div class="brand-name">LIME <em>TIMER</em></div><div class="brand-tagline">ТВОЁ ВРЕМЯ. ТВОИ ПРАВИЛА.</div></div></div>
+      <div class="top-actions">
+        <button class="icon-btn" id="soundBtn" type="button" aria-label="Выключить звук" aria-pressed="true" title="Звук">
+          <svg id="soundIcon" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5a10 10 0 0 1 0 14"/></svg>
+        </button>
+        <button class="icon-btn" id="fullBtn" type="button" aria-label="На весь экран" title="На весь экран"><svg viewBox="0 0 24 24"><path d="M8 3H4a1 1 0 0 0-1 1v4M16 3h4a1 1 0 0 1 1 1v4M3 16v4a1 1 0 0 0 1 1h4M21 16v4a1 1 0 0 1-1 1h-4"/></svg></button>
+      </div>
+    </header>
+    <section class="stage" aria-label="Таймер обратного отсчёта">
+      <div class="status" aria-live="polite"><span class="status-dot" aria-hidden="true"></span><span id="statusText">ГОТОВ К СТАРТУ</span></div>
+      <button class="clock-button" id="clockBtn" type="button" aria-label="Изменить время таймера"><span class="clock" id="clock" role="timer" aria-live="off">00:30</span></button>
+      <div class="helper" id="helperText">Нажми на цифры, чтобы изменить время</div>
+      <div class="track" role="progressbar" aria-label="Прогресс таймера" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><div class="track-fill" id="progressFill"></div></div>
+    </section>
+    <section class="bottom" aria-label="Управление таймером">
+      <div class="section-label"><span>БЫСТРЫЙ ВЫБОР</span><span>мин : сек</span></div>
+      <div class="presets" id="presets">
+        <button class="preset active" type="button" data-seconds="30" aria-pressed="true">00:30</button>
+        <button class="preset" type="button" data-seconds="60" aria-pressed="false">01:00</button>
+        <button class="preset" type="button" data-seconds="300" aria-pressed="false">05:00</button>
+        <button class="preset" type="button" data-seconds="900" aria-pressed="false">15:00</button>
+        <button class="preset" type="button" data-seconds="1500" aria-pressed="false">25:00</button>
+        <button class="preset" type="button" data-seconds="2700" aria-pressed="false">45:00</button>
+      </div>
+      <div class="controls">
+        <button class="control reset" type="button" id="resetBtn"><svg viewBox="0 0 24 24"><path d="M3 11a9 9 0 1 1 2.5 6.2"/><path d="M3 4v7h7"/></svg><span>Сброс</span></button>
+        <button class="control primary" type="button" id="playBtn"><svg viewBox="0 0 24 24" id="playIcon"><path d="m8 5 11 7-11 7V5Z" fill="currentColor" stroke="none"/></svg><span id="playText">Старт</span></button>
+      </div>
+      <div class="footer">Без рекламы · Работает офлайн · Создан для фокуса</div>
+    </section>
+  </main>
+  <div class="overlay" id="overlay" hidden>
+    <form class="sheet" id="timeForm" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="sheet-top"><h2 id="sheetTitle">Своё время</h2><button class="close" type="button" id="closeBtn" aria-label="Закрыть">×</button></div>
+      <p class="sheet-caption">Установи длительность обратного отсчёта</p>
+      <div class="time-fields"><label>МИНУТЫ<input id="minutesInput" inputmode="numeric" pattern="[0-9]*" type="number" min="0" max="99" value="0" required></label><span class="colon">:</span><label>СЕКУНДЫ<input id="secondsInput" inputmode="numeric" pattern="[0-9]*" type="number" min="0" max="59" value="30" required></label></div>
+      <div class="sheet-error" id="sheetError" role="status"></div>
+      <button class="sheet-submit" type="submit">Установить время</button>
+    </form>
+  </div>
+  <script>
+    (() => {
+      'use strict';
+      const $ = (id) => document.getElementById(id);
+      const STORAGE = 'lime-timer-v1';
+      const icons = {
+        play:'<path d="m8 5 11 7-11 7V5Z" fill="currentColor" stroke="none"/>',
+        pause:'<path d="M7 5v14M17 5v14" stroke-width="4"/>',
+        sound:'<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5a10 10 0 0 1 0 14"/>',
+        mute:'<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m16 9 5 6m0-6-5 6"/>'
+      };
+      const state = { duration:30, remaining:30000, endAt:null, running:false, sound:true, finished:false };
+      let audioContext = null;
+      let wakeLock = null;
+      function format(seconds) { const s = Math.max(0, Math.ceil(seconds)); return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
+      function readStorage() {
+        try {
+          const data = JSON.parse(localStorage.getItem(STORAGE) || '{}');
+          if (Number.isInteger(data.duration) && data.duration >= 1 && data.duration <= 5999) state.duration = data.duration;
+          state.remaining = Number.isFinite(data.remaining) ? Math.max(0,Math.min(data.remaining,state.duration*1000)) : state.duration*1000;
+          state.sound = data.sound !== false;
+          state.finished = data.finished === true;
+          if (data.running && Number.isFinite(data.endAt)) { state.endAt = data.endAt; state.running = true; }
+          if (state.running && state.endAt <= Date.now()) { state.running = false; state.remaining = 0; state.finished = true; }
+        } catch (_) { /* Storage may be unavailable in private mode. */ }
+      }
+      function persist() {
+        try { localStorage.setItem(STORAGE,JSON.stringify(state)); } catch (_) { /* Ignore storage restrictions. */ }
+      }
+      function msLeft() { return state.running ? Math.max(0,state.endAt - Date.now()) : state.remaining; }
+      function render() {
+        const ms = msLeft();
+        const shown = format(ms/1000);
+        $('clock').textContent = shown;
+        document.title = shown + ' · Lime Timer';
+        $('app').classList.toggle('is-running',state.running);
+        $('app').classList.toggle('is-finished',state.finished);
+        $('statusText').textContent = state.finished ? 'ВРЕМЯ ВЫШЛО' : state.running ? 'ТАЙМЕР ИДЁТ' : ms < state.duration*1000 ? 'НА ПАУЗЕ' : 'ГОТОВ К СТАРТУ';
+        $('helperText').textContent = state.finished ? 'Отлично! Время завершено.' : state.running ? 'Ты в моменте. Продолжай.' : 'Нажми на цифры, чтобы изменить время';
+        $('playText').textContent = state.running ? 'Пауза' : state.finished ? 'Ещё раз' : ms < state.duration*1000 ? 'Продолжить' : 'Старт';
+        $('playIcon').innerHTML = state.running ? icons.pause : icons.play;
+        const progress = Math.max(0,Math.min(100,(1 - ms/(state.duration*1000))*100));
+        $('progressFill').style.width = progress + '%';
+        $('progress').setAttribute('aria-valuenow',String(Math.round(progress)));
+        document.querySelectorAll('[data-seconds]').forEach(btn => { const active = Number(btn.dataset.seconds) === state.duration; btn.classList.toggle('active',active); btn.setAttribute('aria-pressed',String(active)); });
+        $('soundBtn').setAttribute('aria-pressed',String(state.sound));
+        $('soundBtn').setAttribute('aria-label',state.sound ? 'Выключить звук' : 'Включить звук');
+        $('soundIcon').innerHTML = state.sound ? icons.sound : icons.mute;
+      }
+      async function requestWake() {
+        if (!('wakeLock' in navigator) || document.visibilityState !== 'visible') return;
+        try { wakeLock = await navigator.wakeLock.request('screen'); } catch (_) { /* Browser does not support screen wake lock. */ }
+      }
+      function releaseWake() { if (wakeLock) { wakeLock.release().catch(()=>{}); wakeLock = null; } }
+      function primeAudio() {
+        if (!state.sound) return;
+        try {
+          const Context = window.AudioContext || window.webkitAudioContext;
+          if (Context && !audioContext) audioContext = new Context();
+          if (audioContext && audioContext.state === 'suspended') audioContext.resume().catch(()=>{});
+        } catch (_) { /* No audio available. */ }
+      }
+      function ding() {
+        if (!state.sound) return;
+        try {
+          primeAudio(); if (!audioContext) return;
+          const base = audioContext.currentTime;
+          for (let i=0; i<3; i++) {
+            const t=base + i*.31;
+            const osc=audioContext.createOscillator(), gain=audioContext.createGain();
+            osc.type='sine'; osc.frequency.setValueAtTime(i===2?900:750,t);
+            gain.gain.setValueAtTime(.001,t); gain.gain.exponentialRampToValueAtTime(.16,t+.012); gain.gain.exponentialRampToValueAtTime(.001,t+.24);
+            osc.connect(gain); gain.connect(audioContext.destination); osc.start(t); osc.stop(t+.26);
+          }
+        } catch (_) { /* Audio requires browser permission. */ }
+      }
+      function finish(silent=false) {
+        state.running=false; state.endAt=null; state.remaining=0; state.finished=true; releaseWake(); persist(); render();
+        if (!silent) { ding(); if ('vibrate' in navigator) navigator.vibrate([150,90,150,90,250]); }
+      }
+      function toggle() {
+        primeAudio();
+        if (state.running) { state.remaining=msLeft(); state.running=false; state.endAt=null; releaseWake(); }
+        else { if (state.remaining <= 0) state.remaining=state.duration*1000; state.running=true; state.finished=false; state.endAt=Date.now()+state.remaining; requestWake(); }
+        persist(); render();
+      }
+      function reset() { state.running=false; state.endAt=null; state.remaining=state.duration*1000; state.finished=false; releaseWake(); persist(); render(); }
+      function setDuration(seconds) { if (!Number.isInteger(seconds) || seconds<1 || seconds>5999) return; state.duration=seconds; reset(); }
+      function tick() { if (state.running && state.endAt <= Date.now()) finish(); else if (state.running) render(); }
+      function openEditor() {
+        const leftSeconds = Math.ceil(msLeft()/1000) || state.duration;
+        $('minutesInput').value = Math.floor(leftSeconds/60);
+        $('secondsInput').value = leftSeconds%60;
+        $('sheetError').textContent='';
+        $('overlay').hidden=false;
+        $('minutesInput').focus({preventScroll:true});
+      }
+      function closeEditor() { $('overlay').hidden=true; $('clockBtn').focus({preventScroll:true}); }
+      $('playBtn').addEventListener('click',toggle);
+      $('resetBtn').addEventListener('click',reset);
+      $('clockBtn').addEventListener('click',openEditor);
+      $('closeBtn').addEventListener('click',closeEditor);
+      $('overlay').addEventListener('click',e=>{ if(e.target === $('overlay')) closeEditor(); });
+      $('timeForm').addEventListener('submit',e=>{
+        e.preventDefault(); const m=Number($('minutesInput').value), s=Number($('secondsInput').value);
+        if (!Number.isInteger(m)||!Number.isInteger(s)||m<0||m>99||s<0||s>59||m*60+s<1) { $('sheetError').textContent='Укажи время от 00:01 до 99:59'; return; }
+        setDuration(m*60+s); closeEditor();
+      });
+      $('presets').addEventListener('click',e=>{ const btn=e.target.closest('[data-seconds]'); if (btn) setDuration(Number(btn.dataset.seconds)); });
+      $('soundBtn').addEventListener('click',()=>{ state.sound=!state.sound; if (state.sound) primeAudio(); persist(); render(); });
+      $('fullBtn').addEventListener('click',async()=>{
+        try {
+          if (document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
+          else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
+          else { $('fullBtn').setAttribute('title','На iPhone: Поделиться → На экран «Домой»'); }
+        } catch (_) { /* iOS Safari may not support the fullscreen API. */ }
+      });
+      document.addEventListener('keydown',e=>{
+        if (e.key==='Escape' && !$('overlay').hidden) { closeEditor(); return; }
+        if (!$('overlay').hidden || ['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+        if (e.code==='Space') { e.preventDefault(); toggle(); }
+        if (e.key.toLowerCase()==='r') reset();
+      });
+      document.addEventListener('visibilitychange',()=>{ if (document.visibilityState==='visible') { tick(); if (state.running) requestWake(); } else releaseWake(); });
+      window.addEventListener('pageshow',tick);
+      if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+      readStorage(); render(); setInterval(tick,200);
+    })();
+  </script>
+</body>
+</html>
