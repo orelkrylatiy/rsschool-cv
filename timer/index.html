@@ -248,7 +248,7 @@
       }
       function toggle() {
         primeAudio();
-        if (state.running) { state.remaining=msLeft(); state.running=false; state.endAt=null; releaseWake(); }
+        if (state.running) { state.remaining=Math.min(msLeft(),state.duration*1000-1); state.running=false; state.endAt=null; releaseWake(); }
         else { if (state.remaining <= 0) state.remaining=state.duration*1000; state.running=true; state.finished=false; state.endAt=Date.now()+state.remaining; requestWake(); }
         persist(); render();
       }
