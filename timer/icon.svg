@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#b9ff43"/>
+  <path d="M0 100h512v76H0z" fill="#0b0e0a"/>
+  <path d="M57 61h398v42H57z" fill="#0b0e0a"/>
+  <text x="256" y="152" text-anchor="middle" fill="#b9ff43" font-size="66" font-family="Arial,sans-serif" font-style="italic" font-weight="1000">TIMER</text>
+  <text x="256" y="348" text-anchor="middle" fill="#0b0e0a" font-size="122" font-family="Arial,sans-serif" font-weight="900" letter-spacing="-6">00:30</text>
+</svg>
